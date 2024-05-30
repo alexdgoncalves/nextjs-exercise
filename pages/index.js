@@ -1,9 +1,9 @@
 import NextLink from 'next/link';
 import { Box, Text, Image } from '@skynexui/components';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const fistPage = 1;
 
   const posts = await fetch(`http://localhost:3000/api/posts?page=${fistPage}`)
