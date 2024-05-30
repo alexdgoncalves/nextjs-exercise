@@ -1,13 +1,13 @@
 import NextLink from 'next/link';
 import { Box, Text, Image } from '@skynexui/components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export async function getServerSideProps() {
-  const fistPage = 1;
+  const firstPage = 1;
 
-  const posts = await fetch(`http://localhost:3000/api/posts?page=${fistPage}`)
-    .then((res) => res.json());
+  const res = await fetch(`http://localhost:3000/api/posts?page=${firstPage}`);
+  const posts = await res.json();
 
   return {
     props: {
@@ -23,24 +23,22 @@ export default function HomeScreen({ posts }) {
 
   const infos = {
     nome: 'Alex',
-    info: 'This is a simple example of how to use infinite scroll and static paths in Next.js',
     githubUser: 'alexdgoncalves',
   }
 
   const fetchPosts = async (pageNumber) => {
-    const posts = await fetch(`http://localhost:3000/api/posts?page=${pageNumber}`)
-      .then((res) => res.json());
+    const res = await fetch(`http://localhost:3000/api/posts?page=${pageNumber}`);
+    const newPosts = await res.json();
 
-    setItems((prevItems) => [...prevItems, ...posts]);
+    setItems((prevItems) => [...prevItems, ...newPosts]);
 
-    if (posts.length < 10) {
+    if (newPosts.length < 10) {
       setHasMore(false);
     }
     setPage(pageNumber + 1);
   }
 
   return (
-
     <Box
       styleSheet={{
         flexDirection: 'column',
@@ -54,6 +52,7 @@ export default function HomeScreen({ posts }) {
         next={() => fetchPosts(page)}
         hasMore={hasMore}
         loader={<h4>Loading...</h4>}
+        endMessage={<p>End of list</p>}
       >
         <Image
           src={`https://github.com/${infos.githubUser}.png`}
@@ -72,13 +71,6 @@ export default function HomeScreen({ posts }) {
         >
           {infos.nome}
         </Text>
-        <Text
-          variant="heading3"
-          tag="h3"
-          styleSheet={{ color: '#F9703E', justifyContent: 'center', textAlign: 'center' }}
-        >
-          {infos.info}
-        </Text>
 
         <Box styleSheet={{
           display: 'grid',
@@ -91,7 +83,6 @@ export default function HomeScreen({ posts }) {
           ))}
         </Box>
       </InfiniteScroll>
-
     </Box>
   )
 }
@@ -115,7 +106,7 @@ function Post({ title, content, id }) {
         <Text
           tag="a"
           variant="heading4"
-          styleSheet={{ display: ' block', color: '#F9703E', marginBottom: '8px', cursor: 'pointer', hover: { textDecoration: 'underline' } }}
+          styleSheet={{ display: 'block', color: '#F9703E', marginBottom: '8px', hover: { textDecoration: 'underline' }, cursor: 'pointer' }}
         >
           {title}
         </Text>

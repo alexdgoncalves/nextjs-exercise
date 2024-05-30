@@ -2,7 +2,6 @@ import NextLink from 'next/link';
 import { Box, Text } from '@skynexui/components';
 import { useRouter } from 'next/router';
 
-// dica dos paths estáticos
 export async function getStaticPaths() {
   // const dadosDaAPI = await fetch('https://fakeapi-omariosouto.vercel.app/api/posts')
   //   .then((res) => res.json());
@@ -18,19 +17,17 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(context) {
-  console.log('Gerou!');
-  const id = context.params.id;
-  const dadosDaAPI = await fetch(`https://fakeapi-omariosouto.vercel.app/api/posts/${id}`)
-    .then((res) => res.json());
-  const post = dadosDaAPI;
-  // const post = dados.posts.find((currentPost) => {
-  //   if(currentPost.id === id) {
-  //     return true;
-  //   }
-  //   return false;
-  // })
 
+export async function getStaticProps({ params }) {
+  console.log(params.id);
+  const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
+  const post = await res.json();
+
+  if (!post) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
@@ -40,20 +37,17 @@ export async function getStaticProps(context) {
       content: post.content,
     },
     revalidate: 10,
-  }
+  };
 }
 
 export default function PostByIdScreen(props) {
   const router = useRouter();
-  const post = {
-    title: props.title,
-    date: props.date,
-    content: props.content,
-  };
 
   if (router.isFallback) {
     return 'Essa página não existe, ainda!!';
   }
+
+  const { title, date, content } = props;
 
   return (
     <Box
@@ -70,25 +64,22 @@ export default function PostByIdScreen(props) {
         tag="h1"
         styleSheet={{ color: '#F9703E', justifyContent: 'center', lineHeight: '1.2' }}
       >
-        {post.title}
+        {title}
       </Text>
       <Text styleSheet={{ color: '#F9703E', justifyContent: 'center', borderBottom: '1px solid #F9703E', paddingVertical: '16px', marginVertical: '16px' }}>
-        {post.date}
+        {date}
       </Text>
 
-      {/* Área de Conteudo */}
+      {/* Área de Conteúdo */}
       <Box
         styleSheet={{
           flexDirection: 'column',
         }}
       >
         <Text>
-          {post.content}
+          {content}
         </Text>
-
-        {post.video && <iframe style={{ marginTop: '32px', minHeight: '400px' }} src={post.video} />}
       </Box>
-
 
       {/* Rodapé */}
       <Box
@@ -106,5 +97,5 @@ export default function PostByIdScreen(props) {
         </NextLink>
       </Box>
     </Box>
-  )
+  );
 }

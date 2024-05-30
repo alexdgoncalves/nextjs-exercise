@@ -35,33 +35,32 @@ var external_react_infinite_scroll_component_default = /*#__PURE__*/__webpack_re
 
 
 async function getServerSideProps() {
-    const fistPage = 1;
-    const posts = await fetch(`http://localhost:3000/api/posts?page=${fistPage}`).then((res)=>res.json()
-    );
+    const firstPage = 1;
+    const res = await fetch(`http://localhost:3000/api/posts?page=${firstPage}`);
+    const posts = await res.json();
     return {
         props: {
             posts: posts
         }
     };
 }
-function HomeScreen({ posts: posts1  }) {
-    const { 0: items , 1: setItems  } = (0,external_react_.useState)(posts1);
+function HomeScreen({ posts  }) {
+    const { 0: items , 1: setItems  } = (0,external_react_.useState)(posts);
     const { 0: hasMore , 1: setHasMore  } = (0,external_react_.useState)(true);
     const { 0: page , 1: setPage  } = (0,external_react_.useState)(2);
     const infos = {
         nome: 'Alex',
-        info: 'This is a simple example of how to use infinite scroll and static paths in Next.js',
         githubUser: 'alexdgoncalves'
     };
     const fetchPosts = async (pageNumber)=>{
-        const posts = await fetch(`http://localhost:3000/api/posts?page=${pageNumber}`).then((res)=>res.json()
-        );
+        const res = await fetch(`http://localhost:3000/api/posts?page=${pageNumber}`);
+        const newPosts = await res.json();
         setItems((prevItems)=>[
                 ...prevItems,
-                ...posts
+                ...newPosts
             ]
         );
-        if (posts.length < 10) {
+        if (newPosts.length < 10) {
             setHasMore(false);
         }
         setPage(pageNumber + 1);
@@ -80,6 +79,9 @@ function HomeScreen({ posts: posts1  }) {
             hasMore: hasMore,
             loader: /*#__PURE__*/ jsx_runtime_.jsx("h4", {
                 children: "Loading..."
+            }),
+            endMessage: /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                children: "End of list"
             }),
             children: [
                 /*#__PURE__*/ jsx_runtime_.jsx(components_.Image, {
@@ -100,16 +102,6 @@ function HomeScreen({ posts: posts1  }) {
                         justifyContent: 'center'
                     },
                     children: infos.nome
-                }),
-                /*#__PURE__*/ jsx_runtime_.jsx(components_.Text, {
-                    variant: "heading3",
-                    tag: "h3",
-                    styleSheet: {
-                        color: '#F9703E',
-                        justifyContent: 'center',
-                        textAlign: 'center'
-                    },
-                    children: infos.info
                 }),
                 /*#__PURE__*/ jsx_runtime_.jsx(components_.Box, {
                     styleSheet: {
@@ -150,13 +142,13 @@ function Post({ title , content , id  }) {
                     tag: "a",
                     variant: "heading4",
                     styleSheet: {
-                        display: ' block',
+                        display: 'block',
                         color: '#F9703E',
                         marginBottom: '8px',
-                        cursor: 'pointer',
                         hover: {
                             textDecoration: 'underline'
-                        }
+                        },
+                        cursor: 'pointer'
                     },
                     children: title
                 })
@@ -216,7 +208,7 @@ module.exports = require("next/dist/shared/lib/router/utils/get-asset-path-from-
 
 /***/ }),
 
-/***/ 365:
+/***/ 990:
 /***/ ((module) => {
 
 module.exports = require("next/dist/shared/lib/router/utils/get-middleware-regex.js");

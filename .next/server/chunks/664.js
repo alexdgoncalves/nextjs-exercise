@@ -784,7 +784,7 @@ var _querystring = __webpack_require__(979);
 var _resolveRewrites = _interopRequireDefault(__webpack_require__(52));
 var _routeMatcher = __webpack_require__(226);
 var _routeRegex = __webpack_require__(422);
-var _getMiddlewareRegex = __webpack_require__(365);
+var _getMiddlewareRegex = __webpack_require__(990);
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj

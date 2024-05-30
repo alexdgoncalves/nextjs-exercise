@@ -31,7 +31,6 @@ const router_namespaceObject = require("next/router");
 
 
 
-// dica dos paths estáticos
 async function getStaticPaths() {
     // const dadosDaAPI = await fetch('https://fakeapi-omariosouto.vercel.app/api/posts')
     //   .then((res) => res.json());
@@ -44,18 +43,15 @@ async function getStaticPaths() {
         fallback: 'blocking' // false or 'blocking'
     };
 }
-async function getStaticProps(context) {
-    console.log('Gerou!');
-    const id = context.params.id;
-    const dadosDaAPI = await fetch(`https://fakeapi-omariosouto.vercel.app/api/posts/${id}`).then((res)=>res.json()
-    );
-    const post = dadosDaAPI;
-    // const post = dados.posts.find((currentPost) => {
-    //   if(currentPost.id === id) {
-    //     return true;
-    //   }
-    //   return false;
-    // })
+async function getStaticProps({ params  }) {
+    console.log(params.id);
+    const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
+    const post = await res.json();
+    if (!post) {
+        return {
+            notFound: true
+        };
+    }
     return {
         props: {
             id: post.id,
@@ -68,14 +64,10 @@ async function getStaticProps(context) {
 }
 function PostByIdScreen(props) {
     const router = (0,router_namespaceObject.useRouter)();
-    const post = {
-        title: props.title,
-        date: props.date,
-        content: props.content
-    };
     if (router.isFallback) {
         return 'Essa p\xe1gina n\xe3o existe, ainda!!';
     }
+    const { title , date , content  } = props;
     return(/*#__PURE__*/ (0,jsx_runtime_.jsxs)(components_.Box, {
         styleSheet: {
             flexDirection: 'column',
@@ -92,7 +84,7 @@ function PostByIdScreen(props) {
                     justifyContent: 'center',
                     lineHeight: '1.2'
                 },
-                children: post.title
+                children: title
             }),
             /*#__PURE__*/ jsx_runtime_.jsx(components_.Text, {
                 styleSheet: {
@@ -102,24 +94,15 @@ function PostByIdScreen(props) {
                     paddingVertical: '16px',
                     marginVertical: '16px'
                 },
-                children: post.date
+                children: date
             }),
-            /*#__PURE__*/ (0,jsx_runtime_.jsxs)(components_.Box, {
+            /*#__PURE__*/ jsx_runtime_.jsx(components_.Box, {
                 styleSheet: {
                     flexDirection: 'column'
                 },
-                children: [
-                    /*#__PURE__*/ jsx_runtime_.jsx(components_.Text, {
-                        children: post.content
-                    }),
-                    post.video && /*#__PURE__*/ jsx_runtime_.jsx("iframe", {
-                        style: {
-                            marginTop: '32px',
-                            minHeight: '400px'
-                        },
-                        src: post.video
-                    })
-                ]
+                children: /*#__PURE__*/ jsx_runtime_.jsx(components_.Text, {
+                    children: content
+                })
             }),
             /*#__PURE__*/ jsx_runtime_.jsx(components_.Box, {
                 styleSheet: {
@@ -192,7 +175,7 @@ module.exports = require("next/dist/shared/lib/router/utils/get-asset-path-from-
 
 /***/ }),
 
-/***/ 365:
+/***/ 990:
 /***/ ((module) => {
 
 module.exports = require("next/dist/shared/lib/router/utils/get-middleware-regex.js");
