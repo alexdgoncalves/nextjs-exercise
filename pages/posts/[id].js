@@ -3,24 +3,22 @@ import { Box, Text } from '@skynexui/components';
 import { useRouter } from 'next/router';
 
 export async function getStaticPaths() {
-  // const dadosDaAPI = await fetch('https://fakeapi-omariosouto.vercel.app/api/posts')
-  //   .then((res) => res.json());
+  // Busque a lista de posts da sua API local
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?page=1&limit=10`);
+  const posts = await res.json();
 
-  // const paths = dadosDaAPI.posts.map((postAtual) => {
-  //   return { params: { id: `${postAtual.id}` } };
-  // })
+  const paths = posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
 
   return {
-    // paths: paths,
-    paths: [],
-    fallback: 'blocking' // false or 'blocking'
+    paths,
+    fallback: 'blocking',
   };
 }
 
-
 export async function getStaticProps({ params }) {
-  console.log(params.id);
-  const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${params.id}`);
   const post = await res.json();
 
   if (!post) {

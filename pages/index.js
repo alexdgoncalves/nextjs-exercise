@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 export async function getServerSideProps() {
   const firstPage = 1;
 
-  const res = await fetch(`http://localhost:3000/api/posts?page=${firstPage}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?page=${firstPage}`);
   const posts = await res.json();
 
   return {
@@ -27,7 +27,7 @@ export default function HomeScreen({ posts }) {
   }
 
   const fetchPosts = async (pageNumber) => {
-    const res = await fetch(`http://localhost:3000/api/posts?page=${pageNumber}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?page=${pageNumber}`);
     const newPosts = await res.json();
 
     setItems((prevItems) => [...prevItems, ...newPosts]);
