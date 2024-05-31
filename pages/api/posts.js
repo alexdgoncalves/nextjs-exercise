@@ -1,11 +1,11 @@
 import dados from '../../dados.json';
 
-export default function handler(req, rest) {
-  const { page } = req.query;
+export default function handler(req, res) {
+  const { page = 1 } = req.query;
   const itemsPerPage = 10;
 
   const start = itemsPerPage * (page - 1);
   const end = itemsPerPage * page;
   const data = dados.posts.slice(start, end);
-  rest.status(200).json(data);
+  res.status(200).json(data);
 }

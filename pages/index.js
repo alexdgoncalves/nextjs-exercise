@@ -1,6 +1,6 @@
 import NextLink from 'next/link';
 import { Box, Text, Image } from '@skynexui/components';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export async function getServerSideProps() {
